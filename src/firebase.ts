@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-}
+    apiKey: "AIzaSyBWf42yIQLkqZzKK57OK0AIaAd4kLkU5Rk",
+    authDomain: "pascal-learning.firebaseapp.com",
+    projectId: "pascal-learning",
+    storageBucket: "pascal-learning.firebasestorage.app",
+    messagingSenderId: "62511163956",
+    appId: "1:62511163956:web:d734a22bb9ff3f0aa93861"
+  };
 
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)

@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Article from './pages/Article'
 import Login from './pages/Login'
 import { AuthProvider } from './contexts/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const theme = extendTheme({})
 
@@ -16,8 +17,15 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/article/:id" element={<Article />} />
             <Route path="/login" element={<Login />} />
+            <Route 
+              path="/article/:id" 
+              element={
+                <ProtectedRoute>
+                  <Article />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </Router>
       </AuthProvider>

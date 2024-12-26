@@ -1,26 +1,68 @@
-import { Box, Container, Heading, SimpleGrid } from '@chakra-ui/react'
+import {
+  Container,
+  VStack,
+  Heading,
+  Text,
+  Box,
+  Button,
+  Link as ChakraLink,
+  Alert,
+  AlertIcon
+} from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { articles } from '../data/articles'
+import { useAuth } from '../contexts/AuthContext'
 
 const Home = () => {
+  const { currentUser } = useAuth()
+
   return (
-    <Container maxW="container.xl" py={8}>
-      <Heading mb={6}>Уроки по Pascal</Heading>
-      <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+    <Container maxW="container.md" py={8}>
+      <VStack spacing={8} align="stretch">
+        <Box textAlign="center">
+          <Heading mb={4}>Курс программирования на Pascal</Heading>
+          {!currentUser && (
+            <Alert status="info" borderRadius="md">
+              <AlertIcon />
+              <Text>
+                Для доступа к материалам курса необходима авторизация
+                <Button 
+                  as={Link} 
+                  to="/login" 
+                  colorScheme="blue"
+                  size="sm"
+                  ml={4}
+                >
+                  Войти
+                </Button>
+              </Text>
+            </Alert>
+          )}
+        </Box>
+
         {articles.map((article) => (
           <Box 
-            key={article.id}
-            p={5}
-            shadow="md"
-            borderWidth="1px"
-            as={Link}
-            to={`/article/${article.id}`}
-            _hover={{ shadow: 'lg' }}
+            key={article.id} 
+            p={6} 
+            borderWidth={1} 
+            borderRadius="lg"
+            _hover={{ shadow: 'md' }}
           >
-            <Heading size="md">{article.title}</Heading>
+            <Heading size="md" mb={4}>
+              {article.id}. {article.title}
+            </Heading>
+            {currentUser && (
+              <ChakraLink 
+                as={Link} 
+                to={`/article/${article.id}`}
+                color="blue.500"
+              >
+                Читать материал →
+              </ChakraLink>
+            )}
           </Box>
         ))}
-      </SimpleGrid>
+      </VStack>
     </Container>
   )
 }

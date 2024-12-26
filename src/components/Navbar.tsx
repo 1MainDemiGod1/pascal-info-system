@@ -1,24 +1,50 @@
-import { Box, Flex, Button, Heading, Spacer } from '@chakra-ui/react'
-import { Link as RouterLink } from 'react-router-dom'
+import {
+  Box,
+  Flex,
+  Button,
+  Text,
+  HStack,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Link as ChakraLink
+} from '@chakra-ui/react'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const Navbar = () => {
-  const { currentUser, login, logout } = useAuth()
+  const { currentUser, logout } = useAuth()
+  const location = useLocation()
+  const isLoginPage = location.pathname === '/login'
 
   return (
-    <Box bg="white" borderBottom="1px" borderColor="gray.200" py={4} px={8}>
-      <Flex maxW="container.xl" mx="auto" align="center">
-        <RouterLink to="/">
-          <Heading size="md">Pascal Learning</Heading>
-        </RouterLink>
-        <Spacer />
-        {currentUser ? (
-          <Button onClick={logout}>Выйти</Button>
-        ) : (
-          <Button colorScheme="blue" onClick={login}>
-            Войти
-          </Button>
-        )}
+    <Box bg="gray.100" px={4} py={2}>
+      <Flex maxW="container.lg" mx="auto" align="center" justify="space-between">
+        <ChakraLink as={Link} to="/" fontSize="xl" fontWeight="bold">
+          Pascal Learning
+        </ChakraLink>
+
+        <HStack spacing={4}>
+          {currentUser ? (
+            <Menu>
+              <MenuButton>
+                <HStack>
+                  <Avatar size="sm" src={currentUser.photoURL || undefined} />
+                  <Text>{currentUser.displayName}</Text>
+                </HStack>
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={logout}>Выйти</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : !isLoginPage && (
+            <Button as={Link} to="/login" colorScheme="blue">
+              Войти
+            </Button>
+          )}
+        </HStack>
       </Flex>
     </Box>
   )

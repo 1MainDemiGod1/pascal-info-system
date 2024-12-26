@@ -3,14 +3,16 @@ import {
   GoogleAuthProvider, 
   signInWithPopup, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  User 
 } from 'firebase/auth'
 import { auth } from '../firebase'
 
 interface AuthContextType {
-  currentUser: any
+  currentUser: User | null
   login: () => Promise<void>
   logout: () => Promise<void>
+  loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType)
@@ -20,7 +22,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   async function login() {
@@ -43,7 +45,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     currentUser,
     login,
-    logout
+    logout,
+    loading
   }
 
   return (

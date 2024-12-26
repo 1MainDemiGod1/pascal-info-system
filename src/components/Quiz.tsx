@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Radio, RadioGroup, Stack, Text, VStack, HStack } from '@chakra-ui/react'
+import { Box, Button, Radio, RadioGroup, Text, VStack, HStack } from '@chakra-ui/react'
 
 interface QuizProps {
   questions: {

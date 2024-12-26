@@ -13,7 +13,7 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <AuthProvider>
-        <Router>
+        <Router basename="/pascal-info-system">
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

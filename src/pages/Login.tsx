@@ -5,7 +5,8 @@ import {
   Button, 
   Text, 
   Heading,
-  useToast
+  useToast,
+  Icon
 } from '@chakra-ui/react'
 import { FaGoogle } from 'react-icons/fa'
 import { useAuth } from '../contexts/AuthContext'
@@ -38,23 +39,59 @@ const Login = () => {
   }
 
   return (
-    <Container maxW="container.sm" py={10}>
-      <VStack spacing={8}>
-        <Heading>Вход в систему</Heading>
-        <Text>Войдите, чтобы сохранять свой прогресс</Text>
-        <Box p={8} borderWidth={1} borderRadius="lg" width="100%">
-          <VStack spacing={4}>
-            <Button
-              leftIcon={<FaGoogle />}
-              colorScheme="red"
-              width="100%"
-              onClick={handleLogin}
-            >
-              Войти через Google
-            </Button>
-          </VStack>
-        </Box>
-      </VStack>
+    <Container 
+      maxW="var(--max-content-width)" 
+      py={16}
+      px={4}
+      flex="1"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Box 
+        p={8} 
+        borderWidth="1px" 
+        borderRadius="xl"
+        bg="white"
+        shadow="xl"
+        maxW="400px"
+        w="100%"
+        textAlign="center"
+      >
+        <VStack spacing={6}>
+          <Heading 
+            size="lg"
+            color="var(--heading-color)"
+          >
+            Добро пожаловать
+          </Heading>
+          
+          <Text color="gray.600" fontSize="lg">
+            Войдите, чтобы получить доступ к учебным материалам
+          </Text>
+
+          <Button
+            leftIcon={<Icon as={FaGoogle} />}
+            colorScheme="blue"
+            size="lg"
+            width="100%"
+            height="50px"
+            onClick={handleLogin}
+            fontSize="md"
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "md"
+            }}
+            transition="all 0.2s"
+          >
+            Войти через Google
+          </Button>
+
+          <Text fontSize="sm" color="gray.500">
+            Мы используем Google для безопасной авторизации
+          </Text>
+        </VStack>
+      </Box>
     </Container>
   )
 }

@@ -13,6 +13,8 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { articles } from '../data/articles'
 import Quiz from '../components/Quiz'
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 const Article = () => {
   const { id } = useParams()
@@ -32,6 +34,32 @@ const Article = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  const renderContent = (content: string) => {
+    const parts = content.split(/(`{3}pascal[\s\S]*?`{3})/)
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('```pascal')) {
+        // Извлекаем код из блока ```pascal ... ```
+        const code = part.replace(/```pascal\n?/, '').replace(/```$/, '').trim()
+        return (
+          <Box key={index} my={4}>
+            <SyntaxHighlighter 
+              language="pascal"
+              style={tomorrow}
+              customStyle={{
+                borderRadius: '8px',
+                padding: '16px',
+              }}
+            >
+              {code}
+            </SyntaxHighlighter>
+          </Box>
+        )
+      }
+      return <Text key={index} whiteSpace="pre-line">{part}</Text>
+    })
   }
 
   return (
@@ -88,14 +116,17 @@ const Article = () => {
       {article.sections.map((section) => (
         <Box key={section.anchor} mb={8} id={section.anchor}>
           <Heading size="md" mb={4}>{section.title}</Heading>
-          <Text whiteSpace="pre-line">{section.content}</Text>
+          {renderContent(section.content)}
           <Divider my={4} />
         </Box>
       ))}
 
       {/* Тест */}
       <Box mt={12}>
-        <Quiz questions={article.quiz.questions} />
+        <Quiz 
+          key={article.id}
+          questions={article.quiz.questions} 
+        />
       </Box>
     </Container>
   )

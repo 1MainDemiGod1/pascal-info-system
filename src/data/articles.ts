@@ -30,22 +30,26 @@ export const articles: Article[] = [
         title: "Структура программы",
         anchor: "structure",
         content: `Структура программы на Pascal:
-        program ProgramName;  // Название программы
-        uses ...;            // Подключаемые модули
-        const ...;          // Раздел констант
-        var ...;            // Раздел переменных
-        begin               // Начало программы
-          // Команды
-        end.                // Конец программы`
+\`\`\`pascal
+program ProgramName;  // Название программы
+uses ...;            // Подключаемые модули
+const ...;          // Раздел констант
+var ...;            // Раздел переменных
+begin               // Начало программы
+  // Команды
+end.                // Конец программы
+\`\`\``
       },
       {
         title: "Первая программа",
         anchor: "first-program",
         content: `Пример простой программы:
-        program HelloWorld;
-        begin
-          writeln('Hello, World!');
-        end.`
+\`\`\`pascal
+program HelloWorld;
+begin
+  writeln('Hello, World!');
+end.
+\`\`\``
       },
       {
         title: "Особенности языка",
@@ -100,10 +104,12 @@ export const articles: Article[] = [
         - Longint: -2147483648..2147483647
 
         Пример использования:
-        var
-          age: integer;
-          count: shortint;
-          population: longint;`
+\`\`\`pascal
+var
+  age: integer;
+  count: shortint;
+  population: longint;
+\`\`\``
       },
       {
         title: "Вещественные типы",
@@ -113,9 +119,11 @@ export const articles: Article[] = [
         - Double: повышенной точности
 
         Пример:
-        var
-          price: real;
-          pi: double;`
+\`\`\`pascal
+var
+  price: real;
+  pi: double;
+\`\`\``
       },
       {
         title: "Логический и символьный типы",
@@ -129,9 +137,11 @@ export const articles: Article[] = [
         - Например: 'A', '1', '$'
 
         Пример:
-        var
-          isStudent: boolean;
-          grade: char;`
+\`\`\`pascal
+var
+  isStudent: boolean;
+  grade: char;
+\`\`\``
       },
       {
         title: "Строковый тип",
@@ -141,12 +151,14 @@ export const articles: Article[] = [
         - Максимальная длина: 255 символов
 
         Пример:
-        var
-          name: string;
-          address: string[50];  // строка до 50 символов
+\`\`\`pascal
+var
+  name: string;
+  address: string[50];  // строка до 50 символов
 
-        name := 'Иван';
-        address := 'ул. Примерная, д.1';`
+name := 'Иван';
+address := 'ул. Примерная, д.1';
+\`\`\``
       },
       {
         title: "Объявление и инициализация",
@@ -157,18 +169,20 @@ export const articles: Article[] = [
         3. Тип переменной не может быть изменен
 
         Пример:
-        var
-          age: integer;
-          name: string;
-          isStudent: boolean;
-          grade: real;
+\`\`\`pascal
+var
+  age: integer;
+  name: string;
+  isStudent: boolean;
+  grade: real;
 
-        begin
-          age := 15;
-          name := 'Иван';
-          isStudent := True;
-          grade := 4.5;
-        end.`
+begin
+  age := 15;
+  name := 'Иван';
+  isStudent := True;
+  grade := 4.5;
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -317,7 +331,7 @@ export const articles: Article[] = [
           correctAnswer: 1
         },
         {
-          question: "Как разделяются несколько значений при вводе?",
+          question: "Как ра��деляются несколько значений при вводе?",
           options: [
             "Запятой",
             "Точкой с запятой",
@@ -327,7 +341,7 @@ export const articles: Article[] = [
           correctAnswer: 2
         },
         {
-          question: "Что делает readln без ��араметров?",
+          question: "Что делает readln без параметров?",
           options: [
             "Ничего",
             "Выводит пустую строку",
@@ -348,95 +362,111 @@ export const articles: Article[] = [
         anchor: "if",
         content: `Простейшая форма условного оператора:
 
-        if условие then
-          оператор;
+\`\`\`pascal
+if условие then
+  оператор;
+\`\`\`
 
-        Пример:
-        var age: integer;
-        begin
-          readln(age);
-          if age >= 18 then
-            writeln('Вы совершеннолетний');
-        end.`
+Пример:
+\`\`\`pascal
+var age: integer;
+begin
+  readln(age);
+  if age >= 18 then
+    writeln('Вы совершеннолетний');
+end.
+\`\`\``
       },
       {
         title: "Оператор if-else",
         anchor: "if-else",
         content: `Полная форма условного оператора:
 
-        if условие then
-          оператор1
-        else
-          оператор2;
+\`\`\`pascal
+if условие then
+  оператор1
+else
+  оператор2;
+\`\`\`
 
-        Пример:
-        var grade: integer;
-        begin
-          readln(grade);
-          if grade >= 4 then
-            writeln('Хорошая оценка')
-          else
-            writeln('Недостаточно постараться лучше');
-        end.`
+Пример:
+\`\`\`pascal
+var grade: integer;
+begin
+  readln(grade);
+  if grade >= 4 then
+    writeln('Хорошая оценка')
+  else
+    writeln('Недостаточно постараться лучше');
+end.
+\`\`\``
       },
       {
         title: "Составной оператор",
         anchor: "compound",
         content: `Когда нужно выполнить несколько операторов:
 
-        if условие then
-        begin
-          оператор1;
-          оператор2;
-          оператор3;
-        end
-        else
-        begin
-          оператор4;
-          оператор5;
-        end;
+\`\`\`pascal
+if условие then
+begin
+  оператор1;
+  оператор2;
+  оператор3;
+end
+else
+begin
+  оператор4;
+  оператор5;
+end;
+\`\`\`
 
-        Пример:
-        var score: integer;
-        begin
-          readln(score);
-          if score > 90 then
-          begin
-            writeln('Отлично!');
-            writeln('Вы получаете дополнительные баллы');
-          end
-          else
-          begin
-            writeln('Хорошая попытка');
-            writeln('Попробуйте еще раз');
-          end;
-        end.`
+Пример:
+\`\`\`pascal
+var score: integer;
+begin
+  readln(score);
+  if score > 90 then
+  begin
+    writeln('Отлично!');
+    writeln('Вы получаете дополнительные баллы');
+  end
+  else
+  begin
+    writeln('Хорошая попытка');
+    writeln('Попробуйте еще раз');
+  end;
+end.
+\`\`\``
       },
       {
         title: "Вложенные условия",
         anchor: "nested-if",
         content: `Условные операторы можно вкладывать друг в друга:
 
-        if условие1 then
-          if условие2 then
-            оператор1
-          else
-            оператор2
-        else
-          оператор3;
+\`\`\`pascal
+if условие1 then
+  if условие2 then
+    оператор1
+  else
+    оператор2
+else
+  оператор3;
+\`\`\`
 
-        Пример:
-        var age, height: integer;
-        begin
-          readln(age, height);
-          if age >= 12 then
-            if height >= 140 then
-              writeln('Можно на аттракцион')
-            else
-              writeln('Недостаточный рост')
-          else
-            writeln('Недостаточный возраст');
-        end.`
+Пример:
+\`\`\`pascal
+var age, height: integer;
+begin
+  readln(age, height);
+  if age >= 12 then
+    if height >= 140 then
+      writeln('Можно на аттракцион')
+    else
+      writeln('Недостаточный рост')
+  else
+    writeln('Недостаточный возраст');
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -488,51 +518,57 @@ export const articles: Article[] = [
         anchor: "case-syntax",
         content: `Оператор case используется для множественного выбора:
 
-        case переменная of
-          значение1: оператор1;
-          значение2: оператор2;
-          значение3: оператор3;
-        else
-          операторы
-        end;
+\`\`\`pascal
+case переменная of
+  значение1: оператор1;
+  значение2: оператор2;
+  значение3: оператор3;
+else
+  операторы
+end;
+\`\`\`
 
-        Переменная должна быть порядкового типа (integer, char, boolean, enum).`
+Переменная должна быть порядкового типа (integer, char, boolean, enum).`
       },
       {
         title: "Простой пример",
         anchor: "simple-case",
         content: `Пример использования case:
 
-        var grade: integer;
-        begin
-          readln(grade);
-          case grade of
-            5: writeln('Отлично');
-            4: writeln('Хорошо');
-            3: writeln('Удовлетворительно');
-            2: writeln('Неудовлетворительно');
-          else
-            writeln('Некорректная оценка');
-          end;
-        end.`
+\`\`\`pascal
+var grade: integer;
+begin
+  readln(grade);
+  case grade of
+    5: writeln('Отлично');
+    4: writeln('Хорошо');
+    3: writeln('Удовлетворительно');
+    2: writeln('Неудовлетворительно');
+  else
+    writeln('Некорректная оценка');
+  end;
+end.
+\`\`\``
       },
       {
         title: "Диапазоны значений",
         anchor: "case-ranges",
         content: `В case можно использовать диапазоны значений:
 
-        var age: integer;
-        begin
-          readln(age);
-          case age of
-            0..2: writeln('Младенец');
-            3..6: writeln('Дошкольник');
-            7..17: writeln('Школьник');
-            18..25: writeln('Студент');
-          else
-            writeln('Взрослый');
-          end;
-        end.`
+\`\`\`pascal
+var age: integer;
+begin
+  readln(age);
+  case age of
+    0..2: writeln('Младенец');
+    3..6: writeln('Дошкольник');
+    7..17: writeln('Школьник');
+    18..25: writeln('Студент');
+  else
+    writeln('Взрослый');
+  end;
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -579,57 +615,69 @@ export const articles: Article[] = [
         anchor: "for-loop",
         content: `Цикл с известным числом повторений:
 
-        for счетчик := начальное_значение to конечное_значение do
-          оператор;
+\`\`\`pascal
+for счетчик := начальное_значение to конечное_значение do
+  оператор;
+\`\`\`
 
-        Пример:
-        var i: integer;
-        begin
-          for i := 1 to 5 do
-            writeln('Iteration ', i);
-        end.
+Пример:
+\`\`\`pascal
+var i: integer;
+begin
+  for i := 1 to 5 do
+    writeln('Iteration ', i);
+end.
 
-        Можно использовать downto для обратного отсчета:
-        for i := 10 downto 1 do
-          writeln(i);`
+Можно использовать downto для обратного отсчета:
+for i := 10 downto 1 do
+  writeln(i);
+\`\`\``
       },
       {
         title: "Цикл while",
         anchor: "while-loop",
         content: `Цикл с предусловием:
 
-        while условие do
-          оператор;
+\`\`\`pascal
+while условие do
+  оператор;
+\`\`\`
 
-        Пример:
-        var n: integer;
-        begin
-          n := 1;
-          while n <= 5 do
-          begin
-            writeln(n);
-            n := n + 1;
-          end;
-        end.`
+Пример:
+\`\`\`pascal
+var n: integer;
+begin
+  n := 1;
+  while n <= 5 do
+  begin
+    writeln(n);
+    n := n + 1;
+  end;
+end.
+\`\`\``
       },
       {
         title: "Цикл repeat-until",
         anchor: "repeat-loop",
         content: `Цикл с постусловием:
 
-        repeat
-          операторы
-        until условие;
+\`\`\`pascal
+repeat
+  операторы
+until условие;
+\`\`\`
 
-        Пример:
-        var password: string;
-        begin
-          repeat
-            write('Введите пароль: ');
-            readln(password);
-          until password = 'correct';
-          writeln('Доступ разрешен');
-        end.`
+Пример:
+\`\`\`pascal
+var password: string;
+begin
+  repeat
+    write('Введите пароль: ');
+    readln(password);
+  until password = 'correct';
+  writeln('Доступ разрешен');
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -662,47 +710,53 @@ export const articles: Article[] = [
         content: `Массив - это пронумерованная последовательность элементов одного типа.
 
         Синтаксис:
-        var
-          имя_массива: array[нижняя_граница..верхняя_граница] of тип;
+\`\`\`pascal
+var
+  имя_массива: array[нижняя_граница..верхняя_граница] of тип;
+\`\`\`
 
-        Пример:
-        var
-          numbers: array[1..5] of integer;
-          grades: array[0..10] of real;
-          letters: array[1..26] of char;`
+Пример:
+\`\`\`pascal
+var
+  numbers: array[1..5] of integer;
+  grades: array[0..10] of real;
+  letters: array[1..26] of char;
+\`\`\``
       },
       {
         title: "Работа с элементами",
         anchor: "array-elements",
         content: `Доступ к элементам осуществляется по индексу:
-
-        var
-          arr: array[1..5] of integer;
-          i: integer;
-        begin
-          // Заполнение массива
-          for i := 1 to 5 do
-            arr[i] := i * 2;
-          
-          // Вывод массива
-          for i := 1 to 5 do
-            writeln('arr[', i, '] = ', arr[i]);
-        end.`
+\`\`\`pascal
+var
+  arr: array[1..5] of integer;
+  i: integer;
+begin
+  // Заполнение массива
+  for i := 1 to 5 do
+    arr[i] := i * 2;
+  
+  // Вывод массива
+  for i := 1 to 5 do
+    writeln('arr[', i, '] = ', arr[i]);
+end.
+\`\`\``
       },
       {
         title: "Многомерные массивы",
         anchor: "multidimensional-arrays",
         content: `Двумерный массив (матрица):
-
-        var
-          matrix: array[1..3, 1..3] of integer;
-          i, j: integer;
-        begin
-          // Заполнение матрицы
-          for i := 1 to 3 do
-            for j := 1 to 3 do
-              matrix[i,j] := i + j;
-        end.`
+\`\`\`pascal
+var
+  matrix: array[1..3, 1..3] of integer;
+  i, j: integer;
+begin
+  // Заполнение матрицы
+  for i := 1 to 3 do
+    for j := 1 to 3 do
+      matrix[i,j] := i + j;
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -745,25 +799,29 @@ export const articles: Article[] = [
     title: "Процедуры и функции",
     sections: [
       {
-        title: "Процедуры",
+        title: "Проце��уры",
         anchor: "procedures",
         content: `Процедура - подпрограмма, выполняющая определенные действия.
 
         Синтаксис:
-        procedure имя_процедуры(параметры);
-        begin
-          операторы
-        end;
+\`\`\`pascal
+procedure имя_процедуры(параметры);
+begin
+  операторы
+end;
+\`\`\`
 
-        Пример:
-        procedure PrintHello(name: string);
-        begin
-          writeln('Hello, ', name, '!');
-        end;
+Пример:
+\`\`\`pascal
+procedure PrintHello(name: string);
+begin
+  writeln('Hello, ', name, '!');
+end;
 
-        begin
-          PrintHello('John');
-        end.`
+begin
+  PrintHello('John');
+end.
+\`\`\``
       },
       {
         title: "Функции",
@@ -771,22 +829,26 @@ export const articles: Article[] = [
         content: `Функция - подпрограмма, возвращающая значение.
 
         Синтаксис:
-        function имя_функции(параметры): тип_результата;
-        begin
-          операторы;
-          имя_функции := значение;
-        end;
+\`\`\`pascal
+function имя_функции(параметры): тип_результата;
+begin
+  операторы;
+  имя_функции := значение;
+end;
+\`\`\`
 
-        Пример:
-        function Square(x: integer): integer;
-        begin
-          Square := x * x;
-        end;
+Пример:
+\`\`\`pascal
+function Square(x: integer): integer;
+begin
+  Square := x * x;
+end;
 
-        var n: integer;
-        begin
-          n := Square(5); // n = 25
-        end.`
+var n: integer;
+begin
+  n := Square(5); // n = 25
+end.
+\`\`\``
       },
       {
         title: "Параметры-значения и параметры-переменные",
@@ -803,13 +865,15 @@ export const articles: Article[] = [
         end;
 
         Пример использования:
-        var x, y: integer;
-        begin
-          x := 5;
-          y := 10;
-          Swap(x, y);
-          // Теперь x = 10, y = 5
-        end.`
+\`\`\`pascal
+var x, y: integer;
+begin
+  x := 5;
+  y := 10;
+  Swap(x, y);
+  // Теперь x = 10, y = 5
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -859,10 +923,12 @@ export const articles: Article[] = [
         2. Длинные строки (AnsiString) - без ограничения длины
 
         Пример объявления:
-        var
-          name: string[20];     // Строка до 20 символов
-          text: string;         // Строка стандартной длины (255)
-          long: AnsiString;     // Длинная строка`
+\`\`\`pascal
+var
+  name: string[20];     // Строка до 20 символов
+  text: string;         // Строка стандартной длины (255)
+  long: AnsiString;     // Длинная строка
+\`\`\``
       },
       {
         title: "Операции со строками",
@@ -873,13 +939,15 @@ export const articles: Article[] = [
         3. Присваивание: :=
 
         Пример:
-        var
-          first, last, full: string;
-        begin
-          first := 'Иван';
-          last := 'Петров';
-          full := first + ' ' + last;  // 'Иван Петров'
-        end.`
+\`\`\`pascal
+var
+  first, last, full: string;
+begin
+  first := 'Иван';
+  last := 'Петров';
+  full := first + ' ' + last;  // 'Иван Петров'
+end.
+\`\`\``
       },
       {
         title: "Встроенные функции для строк",
@@ -893,13 +961,15 @@ export const articles: Article[] = [
         5. Pos(substr, str) - поиск подстроки
 
         Пример:
-        var s: string;
-        begin
-          s := 'Pascal';
-          writeln(Length(s));        // 6
-          writeln(Copy(s, 1, 3));    // 'Pas'
-          writeln(Pos('cal', s));    // 4
-        end.`
+\`\`\`pascal
+var s: string;
+begin
+  s := 'Pascal';
+  writeln(Length(s));        // 6
+  writeln(Copy(s, 1, 3));    // 'Pas'
+  writeln(Pos('cal', s));    // 4
+end.
+\`\`\``
       }
     ],
     quiz: {
@@ -940,10 +1010,12 @@ export const articles: Article[] = [
         3. Нетипизированные файлы (file)
 
         Объявление:
-        var
-          t: text;              // текстовый файл
-          f: file of integer;   // файл целых чисел
-          b: file;              // нетипизированный файл`
+\`\`\`pascal
+var
+  t: text;              // текстовый файл
+  f: file of integer;   // файл целых чисел
+  b: file;              // нетипизированный файл
+\`\`\``
       },
       {
         title: "Работа с текстовыми файлами",
@@ -956,64 +1028,70 @@ export const articles: Article[] = [
         4. Close(f) - закрытие файла
 
         Пример чтения:
-        var
-          f: text;
-          s: string;
-        begin
-          Assign(f, 'input.txt');
-          Reset(f);
-          while not Eof(f) do
-          begin
-            readln(f, s);
-            writeln(s);
-          end;
-          Close(f);
-        end.`
+\`\`\`pascal
+var
+  f: text;
+  s: string;
+begin
+  Assign(f, 'input.txt');
+  Reset(f);
+  while not Eof(f) do
+  begin
+    readln(f, s);
+    writeln(s);
+  end;
+  Close(f);
+end.
+\`\`\``
       },
       {
         title: "Запись в файл",
         anchor: "file-writing",
         content: `Пример записи в файл:
 
-        var
-          f: text;
-          i: integer;
-        begin
-          Assign(f, 'output.txt');
-          Rewrite(f);
-          for i := 1 to 10 do
-            writeln(f, i);
-          Close(f);
-        end.
+\`\`\`pascal
+var
+  f: text;
+  i: integer;
+begin
+  Assign(f, 'output.txt');
+  Rewrite(f);
+  for i := 1 to 10 do
+    writeln(f, i);
+  Close(f);
+end.
 
-        Важно:
-        - Всегда закрывайте файлы после работы
-        - Проверяйте наличие файла перед чтением
-        - Используйте {$I+} для обработки ошибок`
+Важно:
+- Всегда закрывайте файлы после работы
+- Проверяйте наличие файла перед чтением
+- Используйте {$I+} для обработки ошибок
+\`\`\``
       },
       {
         title: "Типизированные файлы",
         anchor: "typed-files",
         content: `Работа с типизированными файлами:
 
-        var
-          f: file of integer;
-          n: integer;
-        begin
-          Assign(f, 'numbers.dat');
-          Rewrite(f);
-          for n := 1 to 10 do
-            write(f, n);
-          Close(f);
-          
-          Reset(f);
-          while not Eof(f) do
-          begin
-            read(f, n);
-            write(n, ' ');
-          end;
-          Close(f);
-        end.`
+\`\`\`pascal
+var
+  f: file of integer;
+  n: integer;
+begin
+  Assign(f, 'numbers.dat');
+  Rewrite(f);
+  for n := 1 to 10 do
+    write(f, n);
+  Close(f);
+  
+  Reset(f);
+  while not Eof(f) do
+  begin
+    read(f, n);
+    write(n, ' ');
+  end;
+  Close(f);
+end.
+\`\`\``
       }
     ],
     quiz: {

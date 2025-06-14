@@ -1,111 +1,141 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  VStack,
-  Heading,
-  Select,
-  useToast,
-  Container
-} from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { 
+  Button, 
+  TextField, 
+  Typography, 
+  Container, 
+  Box, 
+  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material'
 import { UserRole } from '../types'
 
-const Register = () => {
+export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [role, setRole] = useState<UserRole>('student')
-  const [loading, setLoading] = useState(false)
-  const { register } = useAuth()
+  const { register, error } = useAuth()
   const navigate = useNavigate()
-  const toast = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (password !== confirmPassword) {
+      alert('Пароли не совпадают')
+      return
+    }
+
     try {
-      setLoading(true)
       await register(email, password, displayName, role)
-      toast({
-        title: 'Регистрация успешна',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
       navigate('/')
     } catch (error) {
-      toast({
-        title: 'Ошибка при регистрации',
-        description: error instanceof Error ? error.message : 'Произошла ошибка',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      })
-    } finally {
-      setLoading(false)
+      console.error('Ошибка регистрации:', error)
     }
   }
 
   return (
-    <Container maxW="container.sm" py={10}>
-      <VStack spacing={8}>
-        <Heading>Регистрация</Heading>
-        <Box w="100%" p={8} borderWidth={1} borderRadius="lg">
-          <form onSubmit={handleSubmit}>
-            <VStack spacing={4}>
-              <FormControl isRequired>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl isRequired>
-                <FormLabel>Пароль</FormLabel>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl isRequired>
-                <FormLabel>Имя</FormLabel>
-                <Input
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                />
-              </FormControl>
-
-              <FormControl isRequired>
-                <FormLabel>Роль</FormLabel>
-                <Select value={role} onChange={(e) => setRole(e.target.value as UserRole)}>
-                  <option value="student">Учащийся</option>
-                  <option value="teacher">Преподаватель</option>
-                  <option value="admin">Администратор</option>
-                </Select>
-              </FormControl>
-
-              <Button
-                type="submit"
-                colorScheme="blue"
-                width="100%"
-                isLoading={loading}
-              >
-                Зарегистрироваться
-              </Button>
-            </VStack>
-          </form>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Регистрация
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+            {error}
+          </Alert>
+        )}
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="displayName"
+            label="Имя пользователя"
+            name="displayName"
+            autoComplete="name"
+            autoFocus
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="confirmPassword"
+            label="Подтвердите пароль"
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="role-label">Роль</InputLabel>
+            <Select
+              labelId="role-label"
+              id="role"
+              value={role}
+              label="Роль"
+              onChange={(e) => setRole(e.target.value as UserRole)}
+            >
+              <MenuItem value="student">Студент</MenuItem>
+              <MenuItem value="teacher">Преподаватель</MenuItem>
+              <MenuItem value="admin">Администратор</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Зарегистрироваться
+          </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Link to="/login" style={{ textDecoration: 'none' }}>
+              <Typography variant="body2" color="primary">
+                Уже есть аккаунт? Войти
+              </Typography>
+            </Link>
+          </Box>
         </Box>
-      </VStack>
+      </Box>
     </Container>
   )
-}
-
-export default Register 
+} 

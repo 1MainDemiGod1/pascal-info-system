@@ -1,99 +1,84 @@
-import { 
-  Box, 
-  Container, 
-  VStack, 
-  Button, 
-  Text, 
-  Heading,
-  useToast,
-  Icon
-} from '@chakra-ui/react'
-import { FaGoogle } from 'react-icons/fa'
+import React, { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Button, TextField, Typography, Container, Box, Alert } from '@mui/material'
 
-const Login = () => {
-  const { login } = useAuth()
+export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const { login, error } = useAuth()
   const navigate = useNavigate()
-  const toast = useToast()
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     try {
-      await login()
-      toast({
-        title: 'Успешный вход',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
+      await login(email, password)
       navigate('/')
     } catch (error) {
-      toast({
-        title: 'Ошибка входа',
-        description: error instanceof Error ? error.message : 'Неизвестная ошибка',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      console.error('Ошибка входа:', error)
     }
   }
 
   return (
-    <Container 
-      maxW="var(--max-content-width)" 
-      py={16}
-      px={4}
-      flex="1"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Box 
-        p={8} 
-        borderWidth="1px" 
-        borderRadius="xl"
-        bg="white"
-        shadow="xl"
-        maxW="400px"
-        w="100%"
-        textAlign="center"
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
       >
-        <VStack spacing={6}>
-          <Heading 
-            size="lg"
-            color="var(--heading-color)"
-          >
-            Добро пожаловать
-          </Heading>
-          
-          <Text color="gray.600" fontSize="lg">
-            Войдите, чтобы получить доступ к учебным материалам
-          </Text>
-
+        <Typography component="h1" variant="h5">
+          Вход в систему
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+            {error}
+          </Alert>
+        )}
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Пароль"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <Button
-            leftIcon={<Icon as={FaGoogle} />}
-            colorScheme="blue"
-            size="lg"
-            width="100%"
-            height="50px"
-            onClick={handleLogin}
-            fontSize="md"
-            _hover={{
-              transform: "translateY(-1px)",
-              shadow: "md"
-            }}
-            transition="all 0.2s"
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
           >
-            Войти через Google
+            Войти
           </Button>
-
-          <Text fontSize="sm" color="gray.500">
-            Мы используем Google для безопасной авторизации
-          </Text>
-        </VStack>
+          <Box sx={{ textAlign: 'center' }}>
+            <Link to="/register" style={{ textDecoration: 'none' }}>
+              <Typography variant="body2" color="primary">
+                Нет аккаунта? Зарегистрироваться
+              </Typography>
+            </Link>
+          </Box>
+        </Box>
       </Box>
     </Container>
   )
-}
-
-export default Login 
+} 

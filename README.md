@@ -1,50 +1,75 @@
-# React + TypeScript + Vite
+# Информационная система по языку Pascal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Информационная система для изучения языка программирования Pascal, включающая теоретический материал, тесты для самоконтроля и проверки знаний.
 
-Currently, two official plugins are available:
+## Функциональность
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Три уровня пользователей: учащийся, преподаватель, администратор
+- Теоретический материал с разбиением на подтемы
+- Тесты для самоконтроля (5-7 вопросов на подтему)
+- Проверочные тесты с сохранением результатов
+- Личный кабинет с историей результатов
+- Управление тестами для преподавателей
+- Управление пользователями для администраторов
 
-## Expanding the ESLint configuration
+## Технологии
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18
+- TypeScript
+- Chakra UI
+- Firebase (Authentication, Firestore)
+- React Router
+- Vite
 
-- Configure the top-level `parserOptions` property like this:
+## Установка
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Клонируйте репозиторий:
+```bash
+git clone https://github.com/your-username/pascal-info-system.git
+cd pascal-info-system
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Установите зависимости:
+```bash
+npm install
 ```
+
+3. Создайте файл `.env` на основе `.env.example` и заполните его данными вашего проекта Firebase:
+```bash
+cp .env.example .env
+```
+
+4. Запустите проект в режиме разработки:
+```bash
+npm run dev
+```
+
+## Структура проекта
+
+- `/src/components` - React компоненты
+- `/src/pages` - страницы приложения
+- `/src/contexts` - React контексты
+- `/src/data` - данные приложения
+- `/src/types` - TypeScript типы
+- `/docs` - документация (включая UML-диаграммы)
+
+## UML-диаграммы
+
+В директории `/docs` находятся UML-диаграммы системы:
+- `use-case-diagram.puml` - диаграмма прецедентов
+
+## Развертывание
+
+1. Соберите проект:
+```bash
+npm run build
+```
+
+2. Разверните на GitHub Pages:
+```bash
+npm run deploy
+```
+
+## Лицензия
+
+MIT

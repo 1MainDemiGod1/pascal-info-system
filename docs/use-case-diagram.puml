@@ -1,0 +1,60 @@
+@startuml
+skinparam actorStyle awesome
+
+' Акторы
+actor Student as "Учащийся"
+actor Teacher as "Преподаватель"
+actor Admin as "Администратор"
+
+' Прецеденты
+rectangle "Информационная система" {
+  usecase "Регистрация" as UC1
+  usecase "Авторизация" as UC2
+  usecase "Просмотр теоретического материала" as UC3
+  usecase "Прохождение теста самоконтроля" as UC4
+  usecase "Прохождение проверочного теста" as UC5
+  usecase "Просмотр результатов тестов" as UC6
+  usecase "Управление тестами" as UC7
+  usecase "Управление пользователями" as UC8
+  usecase "Управление контентом" as UC9
+}
+
+' Связи для учащегося
+Student --> UC1
+Student --> UC2
+Student --> UC3
+Student --> UC4
+Student --> UC5
+Student --> UC6
+
+' Связи для преподавателя
+Teacher --> UC1
+Teacher --> UC2
+Teacher --> UC3
+Teacher --> UC4
+Teacher --> UC5
+Teacher --> UC6
+Teacher --> UC7
+Teacher --> UC9
+
+' Связи для администратора
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+
+' Включения
+UC1 ..> UC2 : <<include>>
+UC4 ..> UC2 : <<include>>
+UC5 ..> UC2 : <<include>>
+UC6 ..> UC2 : <<include>>
+UC7 ..> UC2 : <<include>>
+UC8 ..> UC2 : <<include>>
+UC9 ..> UC2 : <<include>>
+
+@enduml 

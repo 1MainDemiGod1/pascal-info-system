@@ -1,140 +1,196 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { 
-  Button, 
-  TextField, 
-  Typography, 
-  Container, 
-  Box, 
+import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import {
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Paper,
   Alert,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  CircularProgress,
+  Grid
 } from '@mui/material'
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
+import { auth, db } from '../firebase'
+import { useLanguage } from '../contexts/LanguageContext'
+import { useAuth } from '../contexts/AuthContext'
 import { UserRole } from '../types'
 
 export default function Register() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [displayName, setDisplayName] = useState('')
-  const [role, setRole] = useState<UserRole>('student')
-  const { register, error } = useAuth()
+  const [formData, setFormData] = useState({
+    displayName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'student' as UserRole
+  })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { t } = useLanguage()
+  const { currentUser } = useAuth()
+
+  React.useEffect(() => {
+    if (currentUser) {
+      navigate('/')
+    }
+  }, [currentUser, navigate])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (password !== confirmPassword) {
-      alert('Пароли не совпадают')
+    setError('')
+
+    if (formData.password !== formData.confirmPassword) {
+      setError(t('auth.passwordsDoNotMatch'))
       return
     }
 
+    setLoading(true)
+
     try {
-      await register(email, password, displayName, role)
-      navigate('/')
-    } catch (error) {
-      console.error('Ошибка регистрации:', error)
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      )
+
+      await updateProfile(user, {
+        displayName: formData.displayName,
+      })
+
+      await setDoc(doc(db, 'users', user.uid), {
+        id: user.uid,
+        email: user.email,
+        displayName: formData.displayName,
+        role: formData.role,
+        createdAt: Date.now(),
+        lastLoginAt: Date.now(),
+        emailVerified: false
+      })
+      
+      await sendEmailVerification(user)
+      
+      await auth.signOut()
+      alert(`Аккаунт для ${formData.displayName} успешно создан! На вашу почту ${formData.email} отправлено письмо для подтверждения. Пожалуйста, подтвердите его, прежде чем войти.`)
+      navigate('/login')
+
+    } catch (err: any) {
+      console.error("Registration error:", err)
+      setError(err.message || t('auth.registerError'))
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container maxWidth="sm">
       <Box
         sx={{
           marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
-        <Typography component="h1" variant="h5">
-          Регистрация
-        </Typography>
-        {error && (
-          <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-            {error}
-          </Alert>
-        )}
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="displayName"
-            label="Имя пользователя"
-            name="displayName"
-            autoComplete="name"
-            autoFocus
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Пароль"
-            type="password"
-            id="password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="confirmPassword"
-            label="Подтвердите пароль"
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="role-label">Роль</InputLabel>
-            <Select
-              labelId="role-label"
-              id="role"
-              value={role}
-              label="Роль"
-              onChange={(e) => setRole(e.target.value as UserRole)}
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            {t('auth.register')}
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="displayName"
+                  label={t('auth.displayName')}
+                  name="displayName"
+                  autoComplete="name"
+                  value={formData.displayName}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label={t('auth.email')}
+                  name="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label={t('auth.password')}
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label={t('auth.confirmPassword')}
+                  type="password"
+                  id="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
-              <MenuItem value="student">Студент</MenuItem>
-              <MenuItem value="teacher">Преподаватель</MenuItem>
-              <MenuItem value="admin">Администратор</MenuItem>
-            </Select>
-          </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Зарегистрироваться
-          </Button>
-          <Box sx={{ textAlign: 'center' }}>
-            <Link to="/login" style={{ textDecoration: 'none' }}>
-              <Typography variant="body2" color="primary">
-                Уже есть аккаунт? Войти
-              </Typography>
-            </Link>
+              {loading ? <CircularProgress size={24} /> : t('auth.register')}
+            </Button>
+            <Box sx={{ textAlign: 'center' }}>
+              <Link component={RouterLink} to="/login" variant="body2">
+                {t('auth.haveAccount')}
+              </Link>
+            </Box>
           </Box>
-        </Box>
+        </Paper>
       </Box>
     </Container>
   )

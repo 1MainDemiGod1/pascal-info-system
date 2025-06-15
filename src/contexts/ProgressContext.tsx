@@ -48,13 +48,17 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     }
 
     const loadProgress = async () => {
-      const docRef = doc(db, 'progress', currentUser.uid)
-      const docSnap = await getDoc(docRef)
-      
-      if (docSnap.exists()) {
-        setProgress(docSnap.data() as Progress)
-      } else {
-        await setDoc(docRef, defaultProgress)
+      try {
+        const docRef = doc(db, 'progress', currentUser.uid || currentUser.id)
+        const docSnap = await getDoc(docRef)
+        
+        if (docSnap.exists()) {
+          setProgress(docSnap.data() as Progress)
+        } else {
+          await setDoc(docRef, defaultProgress)
+        }
+      } catch (error) {
+        console.error('Error loading progress:', error)
       }
     }
 
@@ -64,13 +68,17 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const markArticleComplete = async (articleId: number) => {
     if (!currentUser) return
 
-    const newProgress = {
-      ...progress,
-      completedArticles: [...new Set([...progress.completedArticles, articleId])]
-    }
+    try {
+      const newProgress = {
+        ...progress,
+        completedArticles: [...new Set([...progress.completedArticles, articleId])]
+      }
 
-    await updateDoc(doc(db, 'progress', currentUser.uid), newProgress)
-    setProgress(newProgress)
+      await updateDoc(doc(db, 'progress', currentUser.uid || currentUser.id), newProgress)
+      setProgress(newProgress)
+    } catch (error) {
+      console.error('Error marking article complete:', error)
+    }
   }
 
   const saveQuizResult = async (articleId: number, score: number, total: number) => {
@@ -83,12 +91,12 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         [articleId]: {
           score,
           total,
-          completedAt: new Date().toISOString()
+          completedAt: Date.now().toString()
         }
       }
     }
 
-    await updateDoc(doc(db, 'progress', currentUser.uid), newProgress)
+    await updateDoc(doc(db, 'progress', currentUser.uid || currentUser.id), newProgress)
     setProgress(newProgress)
   }
 

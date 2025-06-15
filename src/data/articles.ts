@@ -15,6 +15,8 @@ export interface Article {
   };
 }
 
+import { extendedArticles } from './extendedArticles'
+
 export const articles: Article[] = [
   {
     id: 1,
@@ -1134,4 +1136,7 @@ end.
       ]
     }
   }
-] 
+]
+
+// Объединяем основные статьи с дополнительными
+export const allArticles: Article[] = [...articles, ...extendedArticles]

@@ -1,310 +1,233 @@
-import { 
-  Box, 
-  Container, 
-  Heading, 
-  Text, 
-  HStack, 
-  Button, 
-  VStack,
-  Link as ChakraLink,
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import {
+  Container,
+  Typography,
+  Box,
+  Chip,
+  Breadcrumbs,
+  Link,
+  Paper,
   Divider,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink
-} from '@chakra-ui/react'
-import { Link, useParams, useNavigate } from 'react-router-dom'
-import { articles } from '../data/articles'
-import Quiz from '../components/Quiz'
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { useEffect } from 'react'
+  Button,
+  CircularProgress,
+  IconButton
+} from '@mui/material'
+import {
+  ArrowBack as ArrowBackIcon,
+  Bookmark as BookmarkIcon,
+  Share as ShareIcon,
+  Print as PrintIcon
+} from '@mui/icons-material'
+import { Article as ArticleType } from '../types/index'
+import { allArticles } from '../data/articles'
+import { useLanguage } from '../contexts/LanguageContext'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import 'highlight.js/styles/github.css'
+import { articleImages } from '../data/articleImages'
 
-const Article = () => {
-  const { id } = useParams()
+export default function ArticlePage() {
+  const { id } = useParams<{ id: string }>()
+  const [article, setArticle] = useState<ArticleType | null>(null)
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const currentId = Number(id)
-  const article = articles.find(a => a.id === currentId)
+  const { t } = useLanguage()
+  const [bookmarked, setBookmarked] = useState(false)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if (!id) return
+
+    const art = allArticles.find(a => a.id.toString() === id)
+    if (art) {
+      const flatContent = art.sections.map(s=>s.content).join('\n\n')
+      setArticle({
+        ...art,
+        id: art.id.toString(),
+        title: art.title,
+        content: flatContent,
+        imageUrl: articleImages[art.id] || 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg',
+        tags: ['Pascal', 'Программирование', '8 класс'],
+        createdAt: Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
+        readingTime: Math.ceil(art.sections.reduce((t,s)=>t+s.content.length/1000,0))
+      })
+    } else {
+      navigate('/articles')
+    }
+    setLoading(false)
+  }, [id, navigate])
+
+  useEffect(() => {
+    if (id) {
+      const stored = localStorage.getItem('bookmarkedArticles')
+      const arr = stored ? JSON.parse(stored) as string[] : []
+      setBookmarked(arr.includes(id))
+    }
   }, [id])
 
-  if (!article) {
-    return <Container>Статья не найдена</Container>
+  const toggleBookmark = () => {
+    if (!id) return
+    const stored = localStorage.getItem('bookmarkedArticles')
+    const arr = stored ? JSON.parse(stored) as string[] : []
+    let newArr: string[]
+    if (arr.includes(id)) {
+      newArr = arr.filter(a => a !== id)
+      setBookmarked(false)
+    } else {
+      newArr = [...arr, id]
+      setBookmarked(true)
+    }
+    localStorage.setItem('bookmarkedArticles', JSON.stringify(newArr))
   }
 
-  const prevArticle = articles.find(a => a.id === currentId - 1)
-  const nextArticle = articles.find(a => a.id === currentId + 1)
-
-  const scrollToSection = (anchor: string) => {
-    const element = document.getElementById(anchor)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({ title: article?.title, url: window.location.href })
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+      alert('Ссылка скопирована в буфер обмена')
     }
   }
 
-  const renderContent = (content: string) => {
-    const parts = content.split(/(`{3}pascal[\s\S]*?`{3})/)
-    
-    return parts.map((part, index) => {
-      if (part.startsWith('```pascal')) {
-        const code = part.replace(/```pascal\n?/, '').replace(/```$/, '').trim()
-        return (
-          <Box key={index} my={4}>
-            <SyntaxHighlighter 
-              language="pascal"
-              style={coy}
-              customStyle={{
-                borderRadius: '8px',
-                padding: '16px',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                backgroundColor: '#f5f2f0',
-                margin: '16px 0'
-              }}
-            >
-              {code}
-            </SyntaxHighlighter>
-          </Box>
-        )
-      }
-      return <Text key={index} whiteSpace="pre-line">{part}</Text>
-    })
+  const handlePrint = () => window.print()
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (!article) {
+    return null
   }
 
   return (
-    <>
-      {/* Боковая навигация */}
-      {prevArticle && (
-        <Box
-          position="fixed"
-          left={4}
-          top="50%"
-          transform="translateY(-50%)"
-          zIndex={10}
-          display={['none', 'none', 'block']}
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ mb: 4 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate('/articles')}
+          sx={{ mb: 2 }}
         >
-          <Button
-            position="relative"
-            variant="solid"
-            bg="white"
-            shadow="lg"
-            size="lg"
-            h="120px"
-            w="40px"
-            p={0}
-            borderLeftRadius={0}
-            opacity={0.6}
-            onClick={() => navigate(`/article/${prevArticle.id}`)}
-            _hover={{ 
-              opacity: 1,
-              w: "200px",
-              transition: "all 0.2s"
-            }}
-          >
-            <Box 
-              position="absolute" 
-              left={3}
-              display="flex"
-              alignItems="center"
-            >
-              <ChevronLeftIcon boxSize={6} />
-            </Box>
-            <Text 
-              position="absolute"
-              left="40px"
-              px={4}
-              fontSize="sm" 
-              maxW="150px" 
-              noOfLines={2}
-              opacity={0}
-              _groupHover={{ opacity: 1 }}
-            >
-              {prevArticle.title}
-            </Text>
-          </Button>
-        </Box>
-      )}
+          {t('app.back')}
+        </Button>
 
-      {nextArticle && (
-        <Box
-          position="fixed"
-          right={4}
-          top="50%"
-          transform="translateY(-50%)"
-          zIndex={10}
-          display={['none', 'none', 'block']}
-        >
-          <Button
-            position="relative"
-            variant="solid"
-            bg="white"
-            shadow="lg"
-            size="lg"
-            h="120px"
-            w="40px"
-            p={0}
-            borderRightRadius={0}
-            opacity={0.6}
-            onClick={() => navigate(`/article/${nextArticle.id}`)}
-            _hover={{ 
-              opacity: 1,
-              w: "200px",
-              transition: "all 0.2s"
-            }}
+        <Breadcrumbs sx={{ mb: 2 }}>
+          <Link
+            component="button"
+            variant="body1"
+            onClick={() => navigate('/articles')}
+            sx={{ textDecoration: 'none' }}
           >
-            <Box 
-              position="absolute" 
-              right={3}
-              display="flex"
-              alignItems="center"
-            >
-              <ChevronRightIcon boxSize={6} />
-            </Box>
-            <Text 
-              position="absolute"
-              right="40px"
-              px={4}
-              fontSize="sm" 
-              maxW="150px" 
-              noOfLines={2}
-              opacity={0}
-              _groupHover={{ opacity: 1 }}
-            >
-              {nextArticle.title}
-            </Text>
-          </Button>
-        </Box>
-      )}
+            {t('articles.title')}
+          </Link>
+          <Typography color="text.primary">{article.title}</Typography>
+        </Breadcrumbs>
 
-      <Container 
-        maxW="var(--max-content-width)" 
-        py={8}
-        px={4}
-        mx="auto"
-        flex="1"
-      >
-        <Box mb={4} position="relative">
-          {/* Верхний ряд с хлебными крошками */}
-          <Breadcrumb 
-            fontSize="sm" 
-            color="gray.600" 
-            mb={[4, 4, 0]}
-          >
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Link} to="/">Учебник Pascal</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbItem isCurrentPage>
-              <BreadcrumbLink>{article.title}</BreadcrumbLink>
-            </BreadcrumbItem>
-          </Breadcrumb>
-
-          {/* Навигационные ссылки с адаптивным позиционированием */}
-          <Box
-            position={['static', 'static', 'absolute']}
-            right={4}
-            top={0}
-            display="flex"
-            justifyContent={['center', 'center', 'flex-end']}
-            mt={[0, 0, 0]}
-          >
-            <HStack spacing={4} fontSize="sm" color="gray.600" minW="200px">
-              {prevArticle ? (
-                <ChakraLink
-                  as={Link}
-                  to={`/article/${prevArticle.id}`}
-                  replace
-                  display="inline-flex"
-                  alignItems="center"
-                  _hover={{ color: 'blue.600' }}
-                >
-                  <ChevronLeftIcon boxSize={4} />
-                  <Text ml={1}>Предыдущая</Text>
-                </ChakraLink>
-              ) : <Box w="100px" />}
-              
-              {nextArticle ? (
-                <ChakraLink
-                  as={Link}
-                  to={`/article/${nextArticle.id}`}
-                  display="inline-flex"
-                  alignItems="center"
-                  _hover={{ color: 'blue.600' }}
-                >
-                  <Text mr={1}>Следующая</Text>
-                  <ChevronRightIcon boxSize={4} />
-                </ChakraLink>
-              ) : <Box w="100px" />}
-            </HStack>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h4" component="h1">
+            {article.title}
+          </Typography>
+          <Box>
+            <IconButton onClick={toggleBookmark} color={bookmarked ? 'primary' : 'default'}>
+              <BookmarkIcon />
+            </IconButton>
+            {('share' in navigator) && (
+              <IconButton onClick={handleShare}>
+                <ShareIcon />
+              </IconButton>
+            )}
+            <IconButton onClick={handlePrint}>
+              <PrintIcon />
+            </IconButton>
           </Box>
         </Box>
 
-        {/* Заголовок статьи */}
-        <Heading 
-          mb={6} 
-          color="var(--heading-color)"
-          fontSize="2.5rem"
-          fontWeight="600"
-        >
-          {article.title}
-        </Heading>
-
-        {/* Содержание */}
-        <Box 
-          mb={8} 
-          p={6}
-          borderWidth="1px" 
-          borderRadius="lg"
-          bg="gray.50"
-          w="100%"
-        >
-          <Heading size="md" mb={4} color="var(--heading-color)">
-            Содержание:
-          </Heading>
-          <VStack align="stretch" spacing={3}>
-            {article.sections.map((section) => (
-              <ChakraLink
-                key={section.anchor}
-                color="blue.600"
-                onClick={() => scrollToSection(section.anchor)}
-                cursor="pointer"
-                _hover={{ textDecoration: 'none', color: 'blue.700' }}
-                fontSize="1rem"
-              >
-                {section.title}
-              </ChakraLink>
-            ))}
-          </VStack>
+        <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
+          {article.tags.map((tag) => (
+            <Chip key={tag} label={tag} />
+          ))}
         </Box>
 
-        {/* Контент */}
-        {article.sections.map((section) => (
-          <Box key={section.anchor} mb={12} id={section.anchor}>
-            <Heading 
-              size="lg" 
-              mb={4}
-              color="var(--heading-color)"
-              fontSize="1.75rem"
-              fontWeight="500"
-            >
-              {section.title}
-            </Heading>
-            {renderContent(section.content)}
-            <Divider my={8} />
-          </Box>
-        ))}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            {new Date(article.createdAt).toLocaleDateString()}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {article.readingTime} {t('articles.readingTime')}
+          </Typography>
+        </Box>
+      </Box>
 
-        {/* Тест */}
-        <Box mt={16}>
-          <Quiz 
-            key={article.id}
-            questions={article.quiz.questions} 
+      <Paper sx={{ p: 3 }}>
+        <Box sx={{ mb: 3 }}>
+          <img
+            src={article.imageUrl as string}
+            alt={article.title}
+            style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }}
+            onError={(e:any)=>{e.currentTarget.src='/img/articles/placeholder.svg'}}
           />
         </Box>
-      </Container>
-    </>
-  )
-}
 
-export default Article 
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={{
+            code({node, inline, className, children, ...props}: any) {
+              return (
+                <code
+                  className={className}
+                  style={{ backgroundColor: inline ? 'rgba(135,131,120,0.15)' : 'transparent', padding: inline ? '0.2em 0.4em' : undefined }}
+                  {...props}
+                >
+                  {children}
+                </code>
+              )
+            }
+          }}
+        >
+          {article.content}
+        </ReactMarkdown>
+
+        {article.codeExample && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Typography variant="h6" gutterBottom>
+              {t('articles.codeExample')}
+            </Typography>
+            <Paper
+              sx={{
+                p: 2,
+                bgcolor: 'grey.100',
+                fontFamily: 'monospace',
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {article.codeExample}
+            </Paper>
+          </>
+        )}
+
+        {article.exercises && article.exercises.length > 0 && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <Typography variant="h6" gutterBottom>
+              {t('articles.exercises')}
+            </Typography>
+            {article.exercises.map((exercise, index) => (
+              <Box key={index} sx={{ mb: 2 }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  {t('articles.exercise')} {index + 1}
+                </Typography>
+                <Typography variant="body1">{exercise}</Typography>
+              </Box>
+            ))}
+          </>
+        )}
+      </Paper>
+    </Container>
+  )
+} 

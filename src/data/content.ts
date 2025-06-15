@@ -1,4 +1,6 @@
-import { Topic, Test } from '../types'
+import { Topic, Test } from '../types/index'
+import { additionalTopics } from './additionalTopics'
+import { extendedTests } from './extendedTests'
 
 export const topics: Topic[] = [
   {
@@ -250,12 +252,12 @@ var
 begin
   // Заполнение массива
   for i := 1 to 5 do
-    numbers[i] := i * i;
+    numbers[i] := i * 2;
     
   // Вывод массива
   for i := 1 to 5 do
-    writeln(numbers[i]);
-end;
+    write(numbers[i], ' ');
+end.
 \`\`\`
 
 ## Двумерные массивы:
@@ -268,16 +270,16 @@ begin
   // Заполнение матрицы
   for i := 1 to 3 do
     for j := 1 to 3 do
-      matrix[i, j] := i * j;
+      matrix[i,j] := i + j;
       
   // Вывод матрицы
   for i := 1 to 3 do
   begin
     for j := 1 to 3 do
-      write(matrix[i, j], ' ');
+      write(matrix[i,j], ' ');
     writeln;
   end;
-end;
+end.
 \`\`\`
 `,
         topicId: '4',
@@ -289,9 +291,9 @@ end;
         content: `
 # Записи в Pascal
 
-Запись - это структура данных, содержащая набор полей разных типов.
+Запись - это структура данных, которая может содержать поля разных типов.
 
-## Определение типа записи:
+## Объявление записи:
 
 \`\`\`pascal
 type
@@ -300,50 +302,59 @@ type
     age: integer;
     grade: real;
   end;
-\`\`\`
 
-## Работа с записями:
-
-\`\`\`pascal
 var
-  student: Student;
+  student1: Student;
 begin
   // Заполнение полей записи
-  student.name := 'John';
-  student.age := 20;
-  student.grade := 4.5;
+  student1.name := 'John';
+  student1.age := 20;
+  student1.grade := 4.5;
   
-  // Вывод информации
-  writeln('Name: ', student.name);
-  writeln('Age: ', student.age);
-  writeln('Grade: ', student.grade);
-end;
+  // Вывод данных
+  writeln('Name: ', student1.name);
+  writeln('Age: ', student1.age);
+  writeln('Grade: ', student1.grade);
+end.
 \`\`\`
 
 ## Массив записей:
 
 \`\`\`pascal
+type
+  Student = record
+    name: string;
+    age: integer;
+    grade: real;
+  end;
+
 var
   students: array[1..3] of Student;
   i: integer;
 begin
   // Заполнение массива записей
-  for i := 1 to 3 do
-  begin
-    students[i].name := 'Student ' + IntToStr(i);
-    students[i].age := 18 + i;
-    students[i].grade := 3.5 + i * 0.5;
-  end;
+  students[1].name := 'John';
+  students[1].age := 20;
+  students[1].grade := 4.5;
   
-  // Вывод информации
+  students[2].name := 'Mary';
+  students[2].age := 19;
+  students[2].grade := 4.8;
+  
+  students[3].name := 'Peter';
+  students[3].age := 21;
+  students[3].grade := 4.2;
+  
+  // Вывод данных
   for i := 1 to 3 do
   begin
     writeln('Student ', i, ':');
-    writeln('  Name: ', students[i].name);
-    writeln('  Age: ', students[i].age);
-    writeln('  Grade: ', students[i].grade);
+    writeln('Name: ', students[i].name);
+    writeln('Age: ', students[i].age);
+    writeln('Grade: ', students[i].grade);
+    writeln;
   end;
-end;
+end.
 \`\`\`
 `,
         topicId: '4',
@@ -353,8 +364,8 @@ end;
   },
   {
     id: '5',
-    title: 'Работа с файлами',
-    description: 'Ввод-вывод данных в файлы',
+    title: 'Файловый ввод-вывод',
+    description: 'Работа с файлами в Pascal',
     order: 5,
     subTopics: [
       {
@@ -363,50 +374,36 @@ end;
         content: `
 # Работа с текстовыми файлами в Pascal
 
-## Открытие файла:
-
-\`\`\`pascal
-var
-  f: Text;
-begin
-  Assign(f, 'file.txt');
-  Rewrite(f); // Создание нового файла
-  // или
-  Append(f); // Добавление в существующий файл
-  // или
-  Reset(f); // Открытие существующего файла для чтения
-\`\`\`
-
 ## Запись в файл:
 
 \`\`\`pascal
 var
-  f: Text;
+  f: text;
 begin
-  Assign(f, 'file.txt');
-  Rewrite(f);
+  assign(f, 'output.txt');
+  rewrite(f);
   writeln(f, 'Hello, World!');
-  writeln(f, 'This is a test');
-  Close(f);
-end;
+  writeln(f, 'This is a test file.');
+  close(f);
+end.
 \`\`\`
 
 ## Чтение из файла:
 
 \`\`\`pascal
 var
-  f: Text;
+  f: text;
   line: string;
 begin
-  Assign(f, 'file.txt');
-  Reset(f);
-  while not Eof(f) do
+  assign(f, 'input.txt');
+  reset(f);
+  while not eof(f) do
   begin
     readln(f, line);
     writeln(line);
   end;
-  Close(f);
-end;
+  close(f);
+end.
 \`\`\`
 `,
         topicId: '5',
@@ -418,680 +415,289 @@ end;
         content: `
 # Работа с типизированными файлами в Pascal
 
-## Определение типа файла:
+## Запись в типизированный файл:
 
 \`\`\`pascal
 type
   Student = record
-    name: string[50];
+    name: string[30];
     age: integer;
     grade: real;
   end;
-  StudentFile = file of Student;
-\`\`\`
 
-## Запись в типизированный файл:
-
-\`\`\`pascal
 var
-  f: StudentFile;
+  f: file of Student;
   student: Student;
 begin
-  Assign(f, 'students.dat');
-  Rewrite(f);
+  assign(f, 'students.dat');
+  rewrite(f);
   
   student.name := 'John';
   student.age := 20;
   student.grade := 4.5;
-  Write(f, student);
+  write(f, student);
   
-  Close(f);
-end;
+  student.name := 'Mary';
+  student.age := 19;
+  student.grade := 4.8;
+  write(f, student);
+  
+  close(f);
+end.
 \`\`\`
 
 ## Чтение из типизированного файла:
 
 \`\`\`pascal
+type
+  Student = record
+    name: string[30];
+    age: integer;
+    grade: real;
+  end;
+
 var
-  f: StudentFile;
+  f: file of Student;
   student: Student;
 begin
-  Assign(f, 'students.dat');
-  Reset(f);
+  assign(f, 'students.dat');
+  reset(f);
   
-  while not Eof(f) do
+  while not eof(f) do
   begin
-    Read(f, student);
+    read(f, student);
     writeln('Name: ', student.name);
     writeln('Age: ', student.age);
     writeln('Grade: ', student.grade);
+    writeln;
   end;
   
-  Close(f);
-end;
+  close(f);
+end.
 \`\`\`
 `,
         topicId: '5',
         order: 2
       }
     ]
-  },
-  {
-    id: '6',
-    title: 'Модули',
-    description: 'Создание и использование модулей',
-    order: 6,
-    subTopics: [
-      {
-        id: '6.1',
-        title: 'Создание модулей',
-        content: `
-# Создание модулей в Pascal
-
-## Структура модуля:
-
-\`\`\`pascal
-unit MyUnit;
-
-interface
-  // Объявления типов, констант, переменных и заголовков процедур/функций
-  type
-    TPoint = record
-      x, y: integer;
-    end;
-    
-  function Distance(p1, p2: TPoint): real;
-  procedure PrintPoint(p: TPoint);
-
-implementation
-  // Реализация процедур и функций
-  function Distance(p1, p2: TPoint): real;
-  begin
-    Distance := sqrt(sqr(p2.x - p1.x) + sqr(p2.y - p1.y));
-  end;
-  
-  procedure PrintPoint(p: TPoint);
-  begin
-    writeln('Point: (', p.x, ', ', p.y, ')');
-  end;
-end.
-\`\`\`
-
-## Использование модуля:
-
-\`\`\`pascal
-program Test;
-uses MyUnit;
-
-var
-  p1, p2: TPoint;
-begin
-  p1.x := 0; p1.y := 0;
-  p2.x := 3; p2.y := 4;
-  
-  PrintPoint(p1);
-  PrintPoint(p2);
-  writeln('Distance: ', Distance(p1, p2):0:2);
-end.
-\`\`\`
-`,
-        topicId: '6',
-        order: 1
-      },
-      {
-        id: '6.2',
-        title: 'Стандартные модули',
-        content: `
-# Стандартные модули Pascal
-
-## Модуль System:
-
-\`\`\`pascal
-uses System;
-// Содержит базовые типы и процедуры
-\`\`\`
-
-## Модуль Math:
-
-\`\`\`pascal
-uses Math;
-// Математические функции
-var
-  x: real;
-begin
-  x := 3.14;
-  writeln('sin(x) = ', sin(x):0:4);
-  writeln('cos(x) = ', cos(x):0:4);
-  writeln('sqrt(x) = ', sqrt(x):0:4);
-end;
-\`\`\`
-
-## Модуль Crt:
-
-\`\`\`pascal
-uses Crt;
-// Управление консолью
-begin
-  ClrScr; // Очистка экрана
-  TextColor(Red);
-  writeln('Red text');
-  TextColor(White);
-  writeln('White text');
-end;
-\`\`\`
-`,
-        topicId: '6',
-        order: 2
-      }
-    ]
   }
 ]
 
+// Объединяем основные темы с дополнительными
+export const allTopics: Topic[] = [...topics, ...additionalTopics]
+
 export const tests: Test[] = [
   {
-    id: '1.1',
-    title: 'Тест по структуре программы',
-    description: 'Проверьте свои знания о структуре программы на Pascal',
-    type: 'self-check',
-    subTopicId: '1.1',
-    createdAt: new Date(),
-    createdBy: 'system',
+    id: '1',
+    title: 'Тест по основам Pascal',
+    description: 'Проверка знаний основных понятий языка Pascal',
     questions: [
       {
-        id: '1.1.1',
-        question: 'Какая часть программы на Pascal является обязательной?',
+        id: '1.1',
+        text: 'Какая структура является обязательной в программе на Pascal?',
         options: [
-          'Заголовок программы',
-          'Раздел описаний',
-          'Основной блок программы',
-          'Все перечисленные'
+          'Только begin..end',
+          'program, begin..end',
+          'var, begin..end',
+          'program, var, begin..end'
         ],
         correctAnswer: 3
       },
       {
-        id: '1.1.2',
-        question: 'Как обозначается конец программы в Pascal?',
-        options: [
-          'end',
-          'end.',
-          'stop',
-          'finish'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '1.1.3',
-        question: 'В каком разделе программы объявляются переменные?',
-        options: [
-          'program',
-          'var',
-          'begin',
-          'const'
-        ],
-        correctAnswer: 1
-      }
-    ]
-  },
-  {
-    id: '1.2',
-    title: 'Тест по типам данных',
-    description: 'Проверьте свои знания о типах данных в Pascal',
-    type: 'self-check',
-    subTopicId: '1.2',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '1.2.1',
-        question: 'Какой тип данных используется для хранения целых чисел?',
+        id: '1.2',
+        text: 'Какой тип данных используется для хранения целых чисел?',
         options: [
           'Real',
           'Integer',
-          'Char',
-          'String'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '1.2.2',
-        question: 'Какой тип данных используется для хранения одного символа?',
-        options: [
           'String',
-          'Char',
-          'Text',
-          'Symbol'
+          'Boolean'
         ],
         correctAnswer: 1
       },
       {
-        id: '1.2.3',
-        question: 'Какой тип данных используется для хранения логических значений?',
+        id: '1.3',
+        text: 'Как объявляется переменная в Pascal?',
         options: [
-          'Logic',
-          'Boolean',
-          'TrueFalse',
-          'Condition'
+          'variable name: type',
+          'var name: type',
+          'name := type',
+          'type name'
         ],
         correctAnswer: 1
       }
-    ]
+    ],
+    timeLimit: 10,
+    type: 'selfCheck'
   },
   {
-    id: '2.1',
-    title: 'Тест по условным операторам',
-    description: 'Проверьте свои знания об условных операторах в Pascal',
-    type: 'self-check',
-    subTopicId: '2.1',
-    createdAt: new Date(),
-    createdBy: 'system',
+    id: '2',
+    title: 'Тест по управляющим конструкциям',
+    description: 'Проверка знаний условных операторов и циклов',
     questions: [
       {
-        id: '2.1.1',
-        question: 'Какой оператор используется для простого условия?',
+        id: '2.1',
+        text: 'Какой оператор используется для множественного выбора?',
         options: [
-          'if-then',
-          'when-then',
-          'case-of',
-          'select-when'
+          'if',
+          'case',
+          'switch',
+          'select'
         ],
-        correctAnswer: 0
+        correctAnswer: 1
       },
       {
-        id: '2.1.2',
-        question: 'Какой оператор используется для множественного выбора?',
+        id: '2.2',
+        text: 'Какой цикл выполняется хотя бы один раз?',
         options: [
-          'if-then-else',
-          'case-of',
-          'switch-case',
-          'select-case'
-        ],
-        correctAnswer: 1
-      }
-    ]
-  },
-  {
-    id: '2.2',
-    title: 'Тест по циклам',
-    description: 'Проверьте свои знания о циклах в Pascal',
-    type: 'self-check',
-    subTopicId: '2.2',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '2.2.1',
-        question: 'Какой цикл используется, когда известно количество итераций?',
-        options: [
-          'while',
           'for',
+          'while',
           'repeat-until',
           'do-while'
         ],
-        correctAnswer: 1
+        correctAnswer: 2
       },
       {
-        id: '2.2.2',
-        question: 'Какой цикл выполняется хотя бы один раз?',
+        id: '2.3',
+        text: 'Как записывается условие в операторе if?',
         options: [
-          'while',
-          'for',
-          'repeat-until',
-          'if-then'
+          'if (condition) then',
+          'if condition then',
+          'if condition:',
+          'if condition do'
         ],
-        correctAnswer: 2
+        correctAnswer: 1
       }
-    ]
+    ],
+    timeLimit: 10,
+    type: 'selfCheck'
   },
   {
-    id: '3.1',
-    title: 'Тест по процедурам',
-    description: 'Проверьте свои знания о процедурах в Pascal',
-    type: 'self-check',
-    subTopicId: '3.1',
-    createdAt: new Date(),
-    createdBy: 'system',
+    id: '3',
+    title: 'Тест по процедурам и функциям',
+    description: 'Проверка знаний подпрограмм в Pascal',
     questions: [
       {
-        id: '3.1.1',
-        question: 'Что такое процедура в Pascal?',
+        id: '3.1',
+        text: 'Чем отличается функция от процедуры?',
         options: [
-          'Функция, которая возвращает значение',
-          'Подпрограмма, выполняющая последовательность действий',
-          'Тип данных',
-          'Оператор цикла'
+          'Функция не может иметь параметров',
+          'Функция всегда возвращает значение',
+          'Процедура не может изменять параметры',
+          'Нет различий'
         ],
         correctAnswer: 1
       },
       {
-        id: '3.1.2',
-        question: 'Как объявляется процедура в Pascal?',
+        id: '3.2',
+        text: 'Как объявляется функция в Pascal?',
         options: [
-          'function имя_процедуры',
-          'procedure имя_процедуры',
-          'sub имя_процедуры',
-          'void имя_процедуры'
+          'function name: type',
+          'function name(): type',
+          'function name(parameters): type',
+          'type function name'
         ],
-        correctAnswer: 1
+        correctAnswer: 2
       },
       {
-        id: '3.1.3',
-        question: 'Как передать параметр по ссылке в процедуру?',
+        id: '3.3',
+        text: 'Как передать параметр по ссылке в Pascal?',
         options: [
           'Использовать ключевое слово ref',
           'Использовать ключевое слово var',
-          'Использовать ключевое слово pointer',
-          'Использовать ключевое слово address'
+          'Использовать ключевое слово out',
+          'Использовать символ &'
         ],
         correctAnswer: 1
       }
-    ]
+    ],
+    timeLimit: 10,
+    type: 'selfCheck'
   },
   {
-    id: '3.2',
-    title: 'Тест по функциям',
-    description: 'Проверьте свои знания о функциях в Pascal',
-    type: 'self-check',
-    subTopicId: '3.2',
-    createdAt: new Date(),
-    createdBy: 'system',
+    id: '4',
+    title: 'Тест по массивам и записям',
+    description: 'Проверка знаний структур данных в Pascal',
     questions: [
       {
-        id: '3.2.1',
-        question: 'Чем функция отличается от процедуры?',
+        id: '4.1',
+        text: 'Как объявляется одномерный массив в Pascal?',
         options: [
-          'Функция не может принимать параметры',
-          'Функция всегда возвращает значение',
-          'Функция не может содержать локальные переменные',
-          'Функция не может вызывать другие функции'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '3.2.2',
-        question: 'Как объявляется функция в Pascal?',
-        options: [
-          'procedure имя_функции',
-          'function имя_функции',
-          'sub имя_функции',
-          'void имя_функции'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '3.2.3',
-        question: 'Как присвоить значение функции в Pascal?',
-        options: [
-          'return значение',
-          'result := значение',
-          'имя_функции := значение',
-          'exit(значение)'
-        ],
-        correctAnswer: 2
-      }
-    ]
-  },
-  {
-    id: '4.1',
-    title: 'Тест по массивам',
-    description: 'Проверьте свои знания о массивах в Pascal',
-    type: 'self-check',
-    subTopicId: '4.1',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '4.1.1',
-        question: 'Как объявляется одномерный массив в Pascal?',
-        options: [
-          'array[размер] of тип',
-          'array[начало..конец] of тип',
-          'array of тип',
-          'тип[]'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '4.1.2',
-        question: 'Как объявляется двумерный массив в Pascal?',
-        options: [
-          'array[размер1, размер2] of тип',
-          'array[начало1..конец1, начало2..конец2] of тип',
-          'array of array of тип',
-          'тип[][]'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '4.1.3',
-        question: 'Как обратиться к элементу двумерного массива?',
-        options: [
-          'массив[индекс1][индекс2]',
-          'массив[индекс1, индекс2]',
-          'массив(индекс1, индекс2)',
-          'массив{индекс1, индекс2}'
-        ],
-        correctAnswer: 1
-      }
-    ]
-  },
-  {
-    id: '4.2',
-    title: 'Тест по записям',
-    description: 'Проверьте свои знания о записях в Pascal',
-    type: 'self-check',
-    subTopicId: '4.2',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '4.2.1',
-        question: 'Как объявляется тип записи в Pascal?',
-        options: [
-          'type имя = struct',
-          'type имя = record',
-          'type имя = class',
-          'type имя = object'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '4.2.2',
-        question: 'Как обратиться к полю записи?',
-        options: [
-          'запись->поле',
-          'запись.поле',
-          'запись[поле]',
-          'запись(поле)'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '4.2.3',
-        question: 'Могут ли поля записи быть разных типов?',
-        options: [
-          'Нет, все поля должны быть одного типа',
-          'Да, поля могут быть разных типов',
-          'Только если запись объявлена как variant',
-          'Только если запись объявлена как union'
-        ],
-        correctAnswer: 1
-      }
-    ]
-  },
-  {
-    id: '5.1',
-    title: 'Тест по текстовым файлам',
-    description: 'Проверьте свои знания о работе с текстовыми файлами в Pascal',
-    type: 'self-check',
-    subTopicId: '5.1',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '5.1.1',
-        question: 'Какой тип используется для текстовых файлов в Pascal?',
-        options: [
-          'File',
-          'Text',
-          'String',
-          'Char'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '5.1.2',
-        question: 'Какая процедура используется для создания нового файла?',
-        options: [
-          'Open',
-          'Create',
-          'Rewrite',
-          'New'
-        ],
-        correctAnswer: 2
-      },
-      {
-        id: '5.1.3',
-        question: 'Как проверить достижение конца файла?',
-        options: [
-          'if FileEnd(f) then',
-          'if EndOfFile(f) then',
-          'if Eof(f) then',
-          'if FileEof(f) then'
-        ],
-        correctAnswer: 2
-      }
-    ]
-  },
-  {
-    id: '5.2',
-    title: 'Тест по типизированным файлам',
-    description: 'Проверьте свои знания о работе с типизированными файлами в Pascal',
-    type: 'self-check',
-    subTopicId: '5.2',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '5.2.1',
-        question: 'Как объявить типизированный файл?',
-        options: [
-          'file of тип',
-          'typed file of тип',
-          'binary file of тип',
-          'record file of тип'
+          'array[1..n] of type',
+          'type[] name',
+          'name: array of type',
+          'array type name[n]'
         ],
         correctAnswer: 0
       },
       {
-        id: '5.2.2',
-        question: 'Какая процедура используется для записи в типизированный файл?',
+        id: '4.2',
+        text: 'Как объявляется запись в Pascal?',
         options: [
-          'WriteFile',
-          'Write',
-          'WriteRecord',
-          'WriteBinary'
+          'record name { fields }',
+          'type name = record fields end',
+          'struct name { fields }',
+          'class name { fields }'
         ],
         correctAnswer: 1
       },
       {
-        id: '5.2.3',
-        question: 'Как читать данные из типизированного файла?',
+        id: '4.3',
+        text: 'Как обратиться к полю записи в Pascal?',
         options: [
-          'ReadFile(f, data)',
-          'Read(f, data)',
-          'ReadRecord(f, data)',
-          'ReadBinary(f, data)'
-        ],
-        correctAnswer: 1
-      }
-    ]
-  },
-  {
-    id: '6.1',
-    title: 'Тест по созданию модулей',
-    description: 'Проверьте свои знания о создании модулей в Pascal',
-    type: 'self-check',
-    subTopicId: '6.1',
-    createdAt: new Date(),
-    createdBy: 'system',
-    questions: [
-      {
-        id: '6.1.1',
-        question: 'Какое ключевое слово используется для объявления модуля?',
-        options: [
-          'module',
-          'unit',
-          'package',
-          'library'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '6.1.2',
-        question: 'В каком разделе модуля объявляются типы и процедуры?',
-        options: [
-          'declaration',
-          'interface',
-          'public',
-          'export'
-        ],
-        correctAnswer: 1
-      },
-      {
-        id: '6.1.3',
-        question: 'В каком разделе модуля реализуются процедуры и функции?',
-        options: [
-          'implementation',
-          'body',
-          'private',
-          'code'
+          'record.field',
+          'record->field',
+          'record[field]',
+          'record:field'
         ],
         correctAnswer: 0
       }
-    ]
+    ],
+    timeLimit: 10,
+    type: 'selfCheck'
   },
   {
-    id: '6.2',
-    title: 'Тест по стандартным модулям',
-    description: 'Проверьте свои знания о стандартных модулях Pascal',
-    type: 'self-check',
-    subTopicId: '6.2',
-    createdAt: new Date(),
-    createdBy: 'system',
+    id: '5',
+    title: 'Тест по файловому вводу-выводу',
+    description: 'Проверка знаний работы с файлами в Pascal',
     questions: [
       {
-        id: '6.2.1',
-        question: 'Какой модуль содержит базовые типы и процедуры?',
+        id: '5.1',
+        text: 'Какой оператор используется для открытия файла на запись?',
         options: [
-          'Base',
-          'Core',
-          'System',
-          'Main'
+          'open',
+          'rewrite',
+          'create',
+          'write'
         ],
-        correctAnswer: 2
+        correctAnswer: 1
       },
       {
-        id: '6.2.2',
-        question: 'В каком модуле находятся математические функции?',
+        id: '5.2',
+        text: 'Какой оператор используется для открытия файла на чтение?',
         options: [
-          'Math',
-          'Calc',
-          'Numbers',
-          'Arithmetic'
+          'read',
+          'reset',
+          'open',
+          'load'
+        ],
+        correctAnswer: 1
+      },
+      {
+        id: '5.3',
+        text: 'Как закрыть файл в Pascal?',
+        options: [
+          'close(file)',
+          'file.close()',
+          'close file',
+          'end file'
         ],
         correctAnswer: 0
-      },
-      {
-        id: '6.2.3',
-        question: 'Какой модуль используется для управления консолью?',
-        options: [
-          'Console',
-          'Screen',
-          'Crt',
-          'Terminal'
-        ],
-        correctAnswer: 2
       }
-    ]
+    ],
+    timeLimit: 10,
+    type: 'selfCheck'
   }
-] 
+]
+
+// Объединяем основные тесты с дополнительными
+export const allTests: Test[] = [...tests, ...extendedTests] 

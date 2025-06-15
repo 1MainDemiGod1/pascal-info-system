@@ -1,5 +1,15 @@
 import { useState } from 'react'
-import { Box, Button, Radio, RadioGroup, Text, VStack, HStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography,
+  Paper,
+  Stack
+} from '@mui/material'
 
 interface QuizProps {
   questions: {
@@ -35,77 +45,86 @@ const Quiz = ({ questions }: QuizProps) => {
   }
 
   return (
-    <VStack spacing={6} align="stretch">
-      <Text fontSize="xl" fontWeight="bold">Проверьте свои знания</Text>
+    <Stack spacing={3}>
+      <Typography variant="h5" fontWeight="bold">
+        Проверьте свои знания
+      </Typography>
       
       {questions.map((q, qIndex) => (
-        <Box 
+        <Paper 
           key={qIndex} 
-          p={6} 
-          borderWidth="1px" 
-          borderRadius="lg"
-          bg="white"
-          shadow="sm"
+          elevation={1}
+          sx={{ p: 3 }}
         >
-          <Text fontSize="lg" mb={4}>
+          <Typography variant="h6" gutterBottom>
             {qIndex + 1}. {q.question}
-          </Text>
+          </Typography>
+          <FormControl component="fieldset">
           <RadioGroup 
             value={answers[qIndex].toString()}
-            onChange={(value) => handleAnswerChange(qIndex, value)}
+              onChange={(e) => handleAnswerChange(qIndex, e.target.value)}
           >
-            <VStack align="stretch" spacing={3}>
+              <Stack spacing={1}>
               {q.options.map((option, oIndex) => (
-                <Radio 
+                  <FormControlLabel
                   key={oIndex} 
                   value={oIndex.toString()}
-                  isDisabled={isSubmitted}
-                  colorScheme={
+                    control={
+                      <Radio
+                        disabled={isSubmitted}
+                        color={
                     isSubmitted 
                       ? oIndex === q.correctAnswer 
-                        ? 'green'
+                              ? 'success'
                         : answers[qIndex] === oIndex 
-                          ? 'red'
-                          : 'gray'
-                      : 'blue'
+                                ? 'error'
+                                : 'default'
+                            : 'primary'
                   }
-                >
-                  <HStack spacing={2}>
-                    <Text>
-                      {option}
-                    </Text>
+                      />
+                    }
+                    label={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography>{option}</Typography>
                     {isSubmitted && (
                       oIndex === q.correctAnswer ? (
-                        <Text color="green.500">(Правильный ответ)</Text>
+                            <Typography color="success.main">(Правильный ответ)</Typography>
                       ) : answers[qIndex] === oIndex ? (
-                        <Text color="red.500">(Ваш ответ)</Text>
+                            <Typography color="error.main">(Ваш ответ)</Typography>
                       ) : null
                     )}
-                  </HStack>
-                </Radio>
+                      </Box>
+                    }
+                  />
               ))}
-            </VStack>
+              </Stack>
           </RadioGroup>
-        </Box>
+          </FormControl>
+        </Paper>
       ))}
 
       {isSubmitted ? (
-        <Box p={4} bg={score === questions.length ? "green.100" : "blue.100"} borderRadius="md">
-          <Text fontSize="lg" fontWeight="bold">
+        <Paper 
+          sx={{ 
+            p: 2, 
+            bgcolor: score === questions.length ? 'success.light' : 'info.light' 
+          }}
+        >
+          <Typography variant="h6">
             Ваш результат: {score} из {questions.length} ({Math.round(score/questions.length * 100)}%)
-          </Text>
-        </Box>
+          </Typography>
+        </Paper>
       ) : (
         <Button 
-          colorScheme="blue" 
-          size="lg" 
+          variant="contained" 
+          size="large" 
           onClick={handleSubmit}
-          isDisabled={answers.includes(-1)}
+          disabled={answers.includes(-1)}
         >
           Проверить ответы
         </Button>
       )}
-    </VStack>
+    </Stack>
   )
 }
 
